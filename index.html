@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Capacitaciones en Vivo</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #c6e0f1 0%, #0d47c5 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px 0;
+    }
+
+    .container {
+      max-width: 900px;
+    }
+
+    .header-section {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: white;
+    }
+
+    .main-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      font-weight: 300;
+    }
+
+    .user-greeting {
+      margin-bottom: 1rem;
+    }
+
+    .user-greeting .alert {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+    }
+
+    .events-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+      max-width: 750px;
+      margin: 0;
+    }
+
+    .event-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 0;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(20px);
+      transition: all 0.3s ease;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .event-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .event-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #4facfe 0%, #056de4 100%);
+    }
+
+    .card-content {
+      padding: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .date-image-container {
+      position: relative;
+      width: 280px;
+      height: 160px;
+      border-radius: 20px 0 20px 0;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, #667eea 0%, #6a7abe 100%);
+      display: flex;
+      align-items: center;
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .date-section {
+      background: linear-gradient(135deg, #4facfe 0%, #034dec 100%);
+      color: white;
+      width: 100px;
+      height: 160px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      z-index: 2;
+      border-radius: 20px 0 0 0;
+    }
+
+    .date-day {
+      font-size: 2.4rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: -4px;
+    }
+
+    .date-month {
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      opacity: 0.9;
+    }
+
+    .event-image-section {
+      flex: 1;
+      height: 160px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 0 0 20px 0;
+    }
+
+    .event-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.9;
+    }
+
+    .image-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .capacita-logo {
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .date-circle {
+      display: none;
+    }
+
+    .event-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .event-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 0.3rem;
+      line-height: 1.2;
+    }
+
+    .event-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      color: #4a5568;
+    }
+
+    .detail-icon {
+      width: 14px;
+      color: #295ff5;
+      flex-shrink: 0;
+    }
+
+    .event-type-badge {
+      display: inline-block;
+      padding: 0.25rem 0.7rem;
+      background: linear-gradient(135deg, #4084c4, #ee0303);
+      color: white;
+      border-radius: 18px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.4rem;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-calendar {
+      background: linear-gradient(135deg, #2787db 0%, #034be6 100%);
+      border: none;
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border-radius: 18px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .btn-calendar:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+      color: white;
+      background: linear-gradient(135deg, #1a73c7 0%, #0240d4 100%);
+    }
+
+    .btn-download {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border: 2px solid #dee2e6;
+      color: #495057;
+      padding: 0.4rem 0.8rem;
+      border-radius: 18px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .btn-download:hover {
+      background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+      border-color: #adb5bd;
+      transform: translateY(-2px);
+      color: #343a40;
+      box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+    }
+
+    .btn-login {
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      border: none;
+      color: #744210;
+      padding: 0.4rem 1rem;
+      border-radius: 18px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(240, 229, 135, 0.4);
+      color: #744210;
+      text-decoration: none;
+    }
+
+    .login-hint {
+      margin-top: 0.4rem;
+      text-align: center;
+      color: #6c757d;
+      font-size: 0.7rem;
+      font-style: italic;
+    }
+
+    .login-hint i {
+      margin-right: 0.2rem;
+      color: #4facfe;
+      font-size: 0.7rem;
+    }
+
+    .no-events {
+      text-align: center;
+      padding: 3rem;
+      color: white;
+    }
+
+    .no-events i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.7;
+    }
+
+    .error-message {
+      background: rgba(248, 113, 113, 0.1);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      color: #f87171;
+      padding: 1rem;
+      border-radius: 15px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .card-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 0.7rem;
+        padding: 0.7rem;
+      }
+
+      .date-image-container {
+        width: 260px;
+        height: 140px;
+      }
+
+      .date-section {
+        width: 90px;
+        height: 140px;
+      }
+
+      .event-image-section {
+        height: 140px;
+      }
+
+      .date-day {
+        font-size: 2rem;
+      }
+
+      .date-month {
+        font-size: 0.9rem;
+      }
+
+      .main-title {
+        font-size: 2rem;
+      }
+
+      .event-title {
+        font-size: 1.1rem;
+      }
+
+      .button-group {
+        justify-content: center;
+        width: 100%;
+        flex-direction: column;
+      }
+
+      .btn-calendar, .btn-download {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .events-container {
+        max-width: 100%;
+        margin: 0 auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 0 15px;
+      }
+      
+      .events-container {
+        gap: 0.9rem;
+      }
+
+      .card-content {
+        padding: 0.6rem;
+      }
+
+      .date-image-container {
+        width: 240px;
+        height: 130px;
+        border-radius: 18px 0 18px 0;
+      }
+
+      .date-section {
+        width: 80px;
+        height: 130px;
+        border-radius: 18px 0 0 0;
+      }
+
+      .event-image-section {
+        height: 130px;
+        border-radius: 0 0 18px 0;
+      }
+
+      .date-day {
+        font-size: 1.8rem;
+      }
+
+      .date-month {
+        font-size: 0.8rem;
+      }
+
+      .event-title {
+        font-size: 1rem;
+      }
+
+      .detail-item {
+        font-size: 0.8rem;
+      }
+
+      .btn-calendar, .btn-download, .btn-login {
+        padding: 0.35rem 0.7rem;
+        font-size: 0.7rem;
+      }
+    }
+
+    /* Loading Animation */
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+      color: white;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="userGreeting" class="user-greeting"></div>
+    
+    <div class="header-section">
+      <h1 class="main-title">
+        <i class="fas fa-calendar-alt me-3"></i>
+        Agenda de Capacitaciones
+      </h1>
+      <p class="subtitle">Descubre nuestros próximos eventos y capacitaciones</p>
+    </div>
+
+    <div id="eventsList" class="events-container">
+      <div class="loading">
+        <div class="spinner me-3"></div>
+        <span>Cargando eventos...</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+   // *** SOLUCIÓN ALTERNATIVA: Usando URL pública de CSV ***
+// Esta es una solución temporal mientras configuras la API Key correcta
+const SHEET_ID = '1ZkkZaG6b8f8cvvCuFTXPa_Ca06bUx0EihaZsBP5PpVc';
+const CSV_URL = `proxy.php?url=${encodeURIComponent(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`)}`;
+
+// Función para procesar CSV
+function processCSVData(csvText) {
+  const lines = csvText.split('\n');
+  if (lines.length === 0) return [];
+  
+  // Primera línea son los headers
+  const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+  const data = [];
+  
+  // Crear mapa de índices
+  const columnMap = {};
+  headers.forEach((header, index) => {
+    columnMap[header.toLowerCase().trim()] = index;
+  });
+  
+  // Procesar cada fila
+  for (let i = 1; i < lines.length; i++) {
+    if (!lines[i].trim()) continue;
+    
+    // Mejor parsing de CSV que maneja comas dentro de comillas
+    const row = parseCSVRow(lines[i]);
+    const event = {};
+    
+    event.título = row[columnMap['título']] || row[columnMap['title']] || '';
+    event.fecha_inicio = row[columnMap['fecha_inicio']] || '';
+    event.Tipo = row[columnMap['tipo']] || '';
+    event.fecha_fin = row[columnMap['fecha_fin']] || '';
+    event.lugar = row[columnMap['lugar']] || '';
+    event.modalidad = row[columnMap['modalidad']] || '';
+    event.descripcion = row[columnMap['descripcion']] || '';
+    event.imagen = row[columnMap['imagen']] || '';
+    event.enlace_zoom = row[columnMap['link de zoom']] || row[columnMap['enlace_zoom']] || '';
+    
+    if (event.título && event.fecha_inicio) {
+      data.push(event);
+    }
+  }
+  
+  return data;
+}
+
+// Función auxiliar para parsear correctamente filas CSV
+function parseCSVRow(text) {
+  const result = [];
+  let current = '';
+  let inQuotes = false;
+  
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    
+    if (char === '"') {
+      if (inQuotes && text[i + 1] === '"') {
+        current += '"';
+        i++; // Skip next quote
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (char === ',' && !inQuotes) {
+      result.push(current.trim());
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+  
+  result.push(current.trim());
+  return result;
+}
+
+const VALIDAR_LOGIN_URL = 'https://capacita.prodominicana.gob.do/plataforma/validarLogin.php';
+let usuarioMoodle = null;
+
+async function verificarSesion() {
+  try {
+    const res = await fetch(VALIDAR_LOGIN_URL, { credentials: 'include' });
+    const data = await res.json();
+    if (data.logueado) {
+      usuarioMoodle = data;
+      document.getElementById('userGreeting').innerHTML = `
+        <div class="alert alert-success">
+          <i class="fas fa-user-check me-2"></i>
+          👋 Bienvenido, ${data.nombre}
+        </div>
+      `;
+    }
+  } catch (err) {
+    console.error("Error al verificar sesión Moodle:", err);
+  }
+}
+
+// Función para procesar datos de Google Sheets
+function processGoogleSheetsData(response) {
+  const rows = response.values;
+  if (!rows || rows.length === 0) return [];
+
+  // La primera fila contiene los headers
+  const headers = rows[0];
+  const data = [];
+
+  // Crear un mapa de índices de columnas
+  const columnMap = {};
+  headers.forEach((header, index) => {
+    columnMap[header.toLowerCase().trim()] = index;
+  });
+
+  // Procesar cada fila de datos (empezando desde la fila 1, ya que 0 son headers)
+  for (let i = 1; i < rows.length; i++) {
+    const row = rows[i];
+    const event = {};
+
+    // Mapear cada columna usando el nombre del header
+    event.título = row[columnMap['título']] || row[columnMap['title']] || '';
+    event.fecha_inicio = row[columnMap['fecha_inicio']] || '';
+    event.Tipo = row[columnMap['tipo']] || '';
+    event.fecha_fin = row[columnMap['fecha_fin']] || '';
+    event.lugar = row[columnMap['lugar']] || row[columnMap['ubicación']] || '';
+    event.modalidad = row[columnMap['modalidad']] || '';
+    event.descripcion = row[columnMap['descripcion']] || row[columnMap['descripcion_evento']] || '';
+    event.imagen = row[columnMap['imagen']] || '';
+    event.enlace_zoom = row[columnMap['link de zoom']] || row[columnMap['enlace_zoom']] || row[columnMap['zoom_link']] || row[columnMap['link_zoom']] || '';
+
+    // Solo agregar eventos que tengan título y fecha de inicio
+    if (event.título && event.fecha_inicio) {
+      data.push(event);
+    }
+  }
+
+  return data;
+}
+
+function formatDateParts(dateStr) {
+  const date = new Date(dateStr);
+  const day = date.toLocaleDateString('es-ES', { day: '2-digit' });
+  let month = date.toLocaleDateString('es-ES', { month: 'short' }).toLowerCase().replace('.', '');
+  return { day, month };
+}
+
+function formatTime(dateStr) {
+  // Extraer la hora directamente del string sin conversión de zona horaria
+  const timeMatch = dateStr.match(/T(\d{2}):(\d{2}):(\d{2})/);
+  if (!timeMatch) return dateStr;
+  
+  let hours = parseInt(timeMatch[1]);
+  const minutes = timeMatch[2];
+  
+  // Convertir a formato 12 horas
+  const ampm = hours >= 12 ? 'p. m.' : 'a. m.';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // 0 debe ser 12
+  
+  return `${hours}:${minutes} ${ampm}`;
+}
+
+function getModalityIcon(modalidad) {
+  const icons = {
+    'Virtual': 'fas fa-laptop',
+    'Presencial': 'fas fa-building', 
+    'Híbrida': 'fas fa-globe',
+    'Via Zoom': 'fas fa-video',
+    'Vía Zoom': 'fas fa-video',
+    'ZOOM': 'fas fa-video',
+    'Zoom': 'fas fa-video',
+    'En línea': 'fas fa-laptop',
+    'Online': 'fas fa-laptop',
+    'Remoto': 'fas fa-laptop-code'
+  };
+  return icons[modalidad] || 'fas fa-question-circle';
+}
+
+// ✅ CORRECCIÓN: Google Calendar con zona horaria correcta
+function generateGoogleCalendarUrl(event) {
+  // Función para formatear fecha para Google Calendar
+  function formatDateForGoogle(dateStr) {
+    const date = new Date(dateStr);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}${month}${day}T${hours}${minutes}${seconds}`;
+  }
+
+  const start = formatDateForGoogle(event.fecha_inicio);
+  const end = formatDateForGoogle(event.fecha_fin);
+  const title = encodeURIComponent(event.título);
+  
+  // Construir descripción con enlace de Zoom si existe
+  let description = event.descripcion || '';
+  if (event.enlace_zoom && event.enlace_zoom.trim() !== '') {
+    description += `\n\n🔗 Link de Zoom: ${event.enlace_zoom}`;
+  }
+  description += `\n\n📍 Modalidad: ${event.modalidad}\n🏢 Lugar: ${event.lugar}`;
+  
+  const encodedDescription = encodeURIComponent(description);
+  const location = encodeURIComponent(event.lugar || '');
+  
+  // Google Calendar URL con zona horaria de República Dominicana
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${encodedDescription}&location=${location}&ctz=America/Santo_Domingo&sf=true&output=xml`;
+}
+
+// ✅ CORRECCIÓN: Archivo .ics completamente corregido para compatibilidad total
+function generateICS(event) {
+  // Función para formatear fecha ICS con zona horaria de República Dominicana (AST = UTC-4)
+  function formatDateForICS(dateStr, isAllDay = false) {
+    const date = new Date(dateStr);
+    
+    // República Dominicana usa AST (UTC-4) todo el año
+    // Ajustar la fecha a la hora local si viene en UTC
+    const localDate = new Date(date.getTime());
+    
+    if (isAllDay) {
+      const year = localDate.getFullYear();
+      const month = String(localDate.getMonth() + 1).padStart(2, '0');
+      const day = String(localDate.getDate()).padStart(2, '0');
+      return `${year}${month}${day}`;
+    } else {
+      const year = localDate.getFullYear();
+      const month = String(localDate.getMonth() + 1).padStart(2, '0');
+      const day = String(localDate.getDate()).padStart(2, '0');
+      const hours = String(localDate.getHours()).padStart(2, '0');
+      const minutes = String(localDate.getMinutes()).padStart(2, '0');
+      const seconds = String(localDate.getSeconds()).padStart(2, '0');
+      return `${year}${month}${day}T${hours}${minutes}${seconds}`;
+    }
+  }
+
+  // Formatear fechas para ICS
+  const dtStart = formatDateForICS(event.fecha_inicio);
+  const dtEnd = formatDateForICS(event.fecha_fin);
+  const now = formatDateForICS(new Date().toISOString()) + 'Z';
+  
+  // Generar UID único
+  const uid = `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}@prodominicana.gob.do`;
+  
+  // Limpiar y formatear textos para ICS
+  const summary = (event.título || '').replace(/\r?\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+  let description = (event.descripcion || '').replace(/\r?\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+  const location = (event.lugar || '').replace(/\r?\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+  
+  // Agregar enlace de Zoom a la descripción si existe
+  if (event.enlace_zoom && event.enlace_zoom.trim() !== '') {
+    description += `\\n\\n🔗 Link de Zoom: ${event.enlace_zoom}`;
+  }
+  description += `\\n\\n📍 Modalidad: ${event.modalidad || 'Virtual'}\\n🏢 Lugar: ${event.lugar || 'No especificado'}`;
+
+  return `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//ProDominicana Capacita//Capacitaciones//ES
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VTIMEZONE
+TZID:America/Santo_Domingo
+BEGIN:STANDARD
+DTSTART:20070101T000000
+RRULE:FREQ=YEARLY;BYMONTH=1;BYMONTHDAY=1
+TZNAME:AST
+TZOFFSETFROM:-0400
+TZOFFSETTO:-0400
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:${uid}
+DTSTAMP:${now}
+DTSTART;TZID=America/Santo_Domingo:${dtStart}
+DTEND;TZID=America/Santo_Domingo:${dtEnd}
+SUMMARY:${summary}
+DESCRIPTION:${description}
+LOCATION:${location}
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+SEQUENCE:0
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Recordatorio: ${event.título} - Mañana
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT1H
+ACTION:DISPLAY
+DESCRIPTION:Recordatorio: ${event.título} - En 1 hora
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Recordatorio: ${event.título} - En 30 minutos
+END:VALARM
+BEGIN:VALARM
+TRIGGER:PT0M
+ACTION:DISPLAY
+DESCRIPTION:¡Ya comenzó! ${event.título} - Iniciando ahora
+END:VALARM
+END:VEVENT
+END:VCALENDAR`;
+}
+
+function downloadICS(event) {
+  const icsContent = generateICS(event);
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `${event.título.replace(/\s+/g, '_')}.ics`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+function renderEvents(events) {
+  const container = document.getElementById('eventsList');
+  
+  if (!events.length) {
+    container.innerHTML = `
+      <div class="no-events">
+        <i class="fas fa-calendar-times"></i>
+        <h3>No hay eventos disponibles</h3>
+        <p>Vuelve pronto para ver nuestras próximas capacitaciones</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = '';
+  
+  events.forEach(event => {
+    const { day, month } = formatDateParts(event.fecha_inicio);
+    const modalityIcon = getModalityIcon(event.modalidad);
+    
+    const card = document.createElement('div');
+    card.className = 'event-card';
+
+    const timeStr = `${formatTime(event.fecha_inicio)} - ${formatTime(event.fecha_fin)}`;
+    
+    card.innerHTML = `
+      <div class="card-content">
+        <div class="date-image-container">
+          <div class="date-section">
+            <div class="date-day">${day}</div>
+            <div class="date-month">${month}</div>
+          </div>
+          <div class="event-image-section">
+            ${event.imagen && event.imagen.trim() !== '' ? 
+              `<img src="${event.imagen}" alt="Imagen evento" class="event-image" loading="lazy" />` : 
+              ''
+            }
+            <div class="image-overlay">
+            </div>
+          </div>
+        </div>
+        
+        <div class="event-info">
+          ${event.Tipo ? `<div class="event-type-badge">
+            <i class="fas fa-graduation-cap me-1"></i>
+            ${event.Tipo}
+          </div>` : ''}
+          
+          <h3 class="event-title">${event.título}</h3>
+          
+          <div class="event-details">
+            <div class="detail-item">
+              <i class="fas fa-clock detail-icon"></i>
+              <span>${timeStr}</span>
+            </div>
+            
+            <div class="detail-item">
+              <i class="${modalityIcon} detail-icon"></i>
+              <span>${event.modalidad || 'No especificada'}</span>
+            </div>
+            
+            <div class="detail-item">
+              <i class="fas fa-map-marker-alt detail-icon"></i>
+              <span>${event.lugar || 'No especificado'}</span>
+            </div>
+          </div>
+
+          <div class="button-group">
+            <button class="btn-calendar" onclick="handleGoogleCalendar('${escapeForHTML(event.título)}', '${event.fecha_inicio}', '${event.fecha_fin}', '${escapeForHTML(event.descripcion || '')}', '${escapeForHTML(event.lugar || '')}', '${escapeForHTML(event.modalidad || '')}', '${escapeForHTML(event.enlace_zoom || '')}')">
+              <i class="fab fa-google"></i>
+              Agendar en Google Calendar
+            </button>
+            <button class="btn-download" onclick="handleDownloadICS('${escapeForHTML(event.título)}', '${event.fecha_inicio}', '${event.fecha_fin}', '${escapeForHTML(event.descripcion || '')}', '${escapeForHTML(event.lugar || '')}', '${escapeForHTML(event.enlace_zoom || '')}')">
+              <i class="fas fa-download"></i>
+              Descargar Calendario
+            </button>
+            ${!usuarioMoodle ? `
+              <div class="login-hint">
+                <i class="fas fa-info-circle"></i> 
+                Inicia sesión para agendar
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+    
+    container.appendChild(card);
+  });
+}
+
+// Función auxiliar para escapar texto en HTML
+function escapeForHTML(str) {
+  if (!str) return '';
+  return str.replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r');
+}
+
+// Función para registrar acciones en Moodle
+function registrarAccion(accion, eventoTitulo, eventoFecha) {
+  if (!usuarioMoodle) return;
+  
+  fetch('registrar_accion.php', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      'accion': accion,
+      'evento_titulo': eventoTitulo,
+      'evento_fecha': eventoFecha
+    })
+  }).catch(err => console.log('Log error:', err));
+}
+
+// Global functions for button callbacks
+window.handleGoogleCalendar = function(title, start, end, description, location, modalidad, enlaceZoom) {
+  if (!usuarioMoodle) {
+    // Si no está logueado, redirigir a login
+    if (confirm('Necesitas iniciar sesión para agendar eventos. ¿Quieres ir a la página de login?')) {
+      window.open('https://capacita.prodominicana.gob.do/plataforma/login/index.php', '_blank');
+    }
+    return;
+  }
+  
+  // Registrar acción en Moodle
+  registrarAccion('google_calendar', title, start);
+  
+  // Si está logueado, proceder normalmente
+  const event = {
+    título: title,
+    fecha_inicio: start,
+    fecha_fin: end,
+    descripcion: description,
+    lugar: location,
+    modalidad: modalidad || 'Virtual',
+    enlace_zoom: enlaceZoom || ''
+  };
+  const url = generateGoogleCalendarUrl(event);
+  window.open(url, '_blank');
+};
+
+window.handleDownloadICS = function(title, start, end, description, location, enlaceZoom) {
+  if (!usuarioMoodle) {
+    // Si no está logueado, redirigir a login
+    if (confirm('Necesitas iniciar sesión para descargar calendarios. ¿Quieres ir a la página de login?')) {
+      window.open('https://capacita.prodominicana.gob.do/plataforma/login/index.php', '_blank');
+    }
+    return;
+  }
+  
+  // Registrar acción en Moodle
+  registrarAccion('download_ics', title, start);
+  
+  // Si está logueado, proceder normalmente
+  const event = {
+    título: title,
+    fecha_inicio: start,
+    fecha_fin: end,
+    descripcion: description,
+    lugar: location,
+    enlace_zoom: enlaceZoom || ''
+  };
+  const icsContent = generateICS(event);
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `${title.replace(/\s+/g, '_')}.ics`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+// Funciones auxiliares para compatibilidad
+window.openGoogleCalendarWithModality = function(title, start, end, description, location, modalidad) {
+  const event = {
+    título: title,
+    fecha_inicio: start,
+    fecha_fin: end,
+    descripcion: description,
+    lugar: location,
+    modalidad: modalidad || 'Virtual'
+  };
+  const url = generateGoogleCalendarUrl(event);
+  window.open(url, '_blank');
+};
+
+window.openGoogleCalendar = function(title, start, end, description, location) {
+  const event = {
+    título: title,
+    fecha_inicio: start,
+    fecha_fin: end,
+    descripcion: description,
+    lugar: location,
+    modalidad: 'Virtual' // Default, se podría pasar como parámetro
+  };
+  const url = generateGoogleCalendarUrl(event);
+  window.open(url, '_blank');
+};
+
+window.downloadEventICS = function(title, start, end, description, location) {
+  const event = {
+    título: title,
+    fecha_inicio: start,
+    fecha_fin: end,
+    descripcion: description,
+    lugar: location
+  };
+  const icsContent = generateICS(event);
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `${title.replace(/\s+/g, '_')}.ics`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+async function init() {
+  await verificarSesion();
+  
+  try {
+    console.log('Cargando desde CSV URL:', CSV_URL);
+    
+    const response = await fetch(CSV_URL);
+    
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+    }
+    
+    const csvText = await response.text();
+    console.log('CSV recibido:', csvText.substring(0, 200) + '...');
+    
+    // Procesar los datos CSV
+    const events = processCSVData(csvText);
+    console.log('Eventos procesados:', events);
+    
+    // Filtrar eventos que tengan fechas válidas
+    const validEvents = events.filter(evt => {
+      const startDate = new Date(evt.fecha_inicio);
+      return !isNaN(startDate.getTime());
+    });
+    
+    console.log('Eventos válidos:', validEvents);
+    
+    // Ordenar eventos por fecha
+    validEvents.sort((a, b) => new Date(a.fecha_inicio) - new Date(b.fecha_inicio));
+    
+    renderEvents(validEvents);
+    
+  } catch (err) {
+    console.error('Error cargando eventos:', err);
+    
+    // Fallback: Si falla CSV, intentar con API Key (si está configurada)
+    if (typeof GOOGLE_API_KEY !== 'undefined' && GOOGLE_API_KEY !== 'AIzaSyDhQGOQOWAg5YQgG0qYfhEjpGUzKzGzGzG') {
+      console.log('Intentando con Google Sheets API...');
+      try {
+        const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/A1:Z1000?key=${GOOGLE_API_KEY}`;
+        const apiResponse = await fetch(apiUrl);
+        if (apiResponse.ok) {
+          const data = await apiResponse.json();
+          const events = processGoogleSheetsData(data);
+          const validEvents = events.filter(evt => {
+            const startDate = new Date(evt.fecha_inicio);
+            return !isNaN(startDate.getTime());
+          });
+          validEvents.sort((a, b) => new Date(a.fecha_inicio) - new Date(b.fecha_inicio));
+          renderEvents(validEvents);
+          return;
+        }
+      } catch (apiErr) {
+        console.error('Error con API también:', apiErr);
+      }
+    }
+    
+    document.getElementById('eventsList').innerHTML = `
+      <div class="error-message">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <strong>Error al cargar eventos:</strong><br>
+        ${err.message}
+        <br><br>
+        <small><strong>Posibles soluciones:</strong><br>
+        1. Verifica que la hoja sea pública y accessible<br>
+        2. Configura una API Key válida de Google Sheets<br>
+        3. Verifica que las columnas tengan los nombres correctos<br>
+        4. Revisa la consola para más detalles (F12)</small>
+      </div>
+    `;
+  }
+}
+
+// Initialize the app
+init();
+  </script>
+</body>
+</html>
