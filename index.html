@@ -497,8 +497,7 @@
    // *** SOLUCIÓN ALTERNATIVA: Usando URL pública de CSV ***
 // Esta es una solución temporal mientras configuras la API Key correcta
 const SHEET_ID = '1ZkkZaG6b8f8cvvCuFTXPa_Ca06bUx0EihaZsBP5PpVc';
-const CSV_URL = `proxy.php?url=${encodeURIComponent(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`)}`;
-
+const CSV_URL = `proxy.php?url=${encodeURIComponent('https://docs.google.com/spreadsheets/d/e/2PACX-1vRzBZBecov3omm0VPieuHnxNwW9tDcYf8zyHVECUWXXJmS9FWwoA94bC4ktXUODEc-z203bQ97ejzsR/pub?output=csv')}`;
 // Función para procesar CSV
 function processCSVData(csvText) {
   const lines = csvText.split('\n');
@@ -511,7 +510,7 @@ function processCSVData(csvText) {
   // Crear mapa de índices
   const columnMap = {};
   headers.forEach((header, index) => {
-    columnMap[header.toLowerCase().trim()] = index;
+    columnMap[header.toLowerCase().trim().replace(/"/g, '')] = index;
   });
   
   // Procesar cada fila
@@ -524,7 +523,7 @@ function processCSVData(csvText) {
     
     event.título = row[columnMap['título']] || row[columnMap['title']] || '';
     event.fecha_inicio = row[columnMap['fecha_inicio']] || '';
-    event.Tipo = row[columnMap['tipo']] || '';
+    event.Tipo = row[columnMap['tipo']] || row[columnMap['Tipo']] || '';
     event.fecha_fin = row[columnMap['fecha_fin']] || '';
     event.lugar = row[columnMap['lugar']] || '';
     event.modalidad = row[columnMap['modalidad']] || '';
@@ -601,7 +600,7 @@ function processGoogleSheetsData(response) {
   // Crear un mapa de índices de columnas
   const columnMap = {};
   headers.forEach((header, index) => {
-    columnMap[header.toLowerCase().trim()] = index;
+    columnMap[header.toLowerCase().trim().replace(/"/g, '')] = index;
   });
 
   // Procesar cada fila de datos (empezando desde la fila 1, ya que 0 son headers)
